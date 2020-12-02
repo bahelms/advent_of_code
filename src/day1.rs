@@ -2,10 +2,9 @@ use std::fs;
 
 const SUM: i32 = 2020;
 
-#[allow(dead_code)]
 pub fn part_one() {
     let entries = get_entries();
-    if let Some((entry1, entry2)) = entry_equaling_sum(&entries[..], SUM) {
+    if let Some((entry1, entry2)) = entries_equaling_sum(&entries[..], SUM) {
         println!("Day 1A - Answer: {}", entry1 * entry2);
     }
 }
@@ -17,13 +16,13 @@ pub fn part_two() {
         let sublist = &entries[i..];
         let remainder = SUM - entry1;
 
-        if let Some((entry2, entry3)) = entry_equaling_sum(sublist, remainder) {
+        if let Some((entry2, entry3)) = entries_equaling_sum(sublist, remainder) {
             println!("Day 1B - Answer: {}", entry1 * entry2 * entry3);
         }
     }
 }
 
-fn entry_equaling_sum(entries: &[i32], sum: i32) -> Option<(i32, i32)> {
+fn entries_equaling_sum(entries: &[i32], sum: i32) -> Option<(i32, i32)> {
     for (i, entry) in entries.iter().enumerate() {
         let remainder = sum - entry;
         let sublist = &entries[i..];
@@ -35,8 +34,8 @@ fn entry_equaling_sum(entries: &[i32], sum: i32) -> Option<(i32, i32)> {
 }
 
 fn get_entries() -> Vec<i32> {
-    let input = fs::read_to_string("data/day1a.txt").unwrap();
-    input
+    fs::read_to_string("data/day1a.txt")
+        .unwrap()
         .lines()
         .map(|line| line.parse::<i32>().unwrap())
         .collect()
