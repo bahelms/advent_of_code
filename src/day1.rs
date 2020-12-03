@@ -2,14 +2,19 @@ use std::fs;
 
 const SUM: i32 = 2020;
 
-pub fn part_one() {
+pub fn execute() {
+    part_one();
+    part_two();
+}
+
+fn part_one() {
     let entries = get_entries();
     if let Some((entry1, entry2)) = entries_equaling_sum(&entries[..], SUM) {
         println!("Day 1A - Answer: {}", entry1 * entry2);
     }
 }
 
-pub fn part_two() {
+fn part_two() {
     let entries = get_entries();
 
     for (i, entry1) in entries.iter().enumerate() {
