@@ -39,7 +39,7 @@ fn entries_equaling_sum(entries: &[i32], sum: i32) -> Option<(i32, i32)> {
 }
 
 fn get_entries() -> Vec<i32> {
-    fs::read_to_string("data/day1a.txt")
+    fs::read_to_string("data/day1.txt")
         .unwrap()
         .lines()
         .map(|line| line.parse::<i32>().unwrap())
