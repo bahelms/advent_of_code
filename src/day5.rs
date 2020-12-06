@@ -71,8 +71,8 @@ fn get_boarding_passes() -> Vec<String> {
 mod tests {
     #[test]
     fn calculate_seat_id_works() {
-        assert_eq!(super::calculate_seat_id("BFFFBBFRRR".to_string()), 567);
-        assert_eq!(super::calculate_seat_id("FFFBBBFRRR".to_string()), 119);
-        assert_eq!(super::calculate_seat_id("BBFFBBFRLL".to_string()), 820);
+        assert_eq!(super::calculate_seat_id(&"BFFFBBFRRR".to_string()), 567);
+        assert_eq!(super::calculate_seat_id(&"FFFBBBFRRR".to_string()), 119);
+        assert_eq!(super::calculate_seat_id(&"BBFFBBFRLL".to_string()), 820);
     }
 }
