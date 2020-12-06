@@ -17,7 +17,7 @@ fn part_one() {
             valid_passports += 1;
         }
     }
-    println!("Day 4A - Answer: {:?}", valid_passports);
+    print!("Day 4 - A: {:?}", valid_passports);
 }
 
 fn part_two() {
@@ -29,7 +29,7 @@ fn part_two() {
             valid_passports += 1;
         }
     }
-    println!("Day 4B - Answer: {:?}", valid_passports);
+    println!(", B: {:?}", valid_passports);
 }
 
 fn fields_are_valid(fields: &Vec<Vec<&str>>) -> bool {

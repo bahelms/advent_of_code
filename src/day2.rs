@@ -47,7 +47,7 @@ fn part_one() {
         }
     }
 
-    println!("Day 2A - Answer: {:?}", count);
+    print!("Day 2 - A: {:?}", count);
 }
 
 fn part_two() {
@@ -71,7 +71,7 @@ fn part_two() {
         }
     }
 
-    println!("Day 2B - Answer: {:?}", count);
+    println!(", B: {:?}", count);
 }
 
 fn occurrence_of_character(record: &Record) -> i32 {

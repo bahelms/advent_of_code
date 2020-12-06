@@ -15,7 +15,7 @@ pub fn execute() {
 fn part_one() {
     let map = expand_map(get_map());
     let slope = Slope { right: 3, down: 1 };
-    println!("Day 3A - Answer: {:?}", tree_count_for_slope(&map, &slope));
+    print!("Day 3 - A: {:?}", tree_count_for_slope(&map, &slope));
 }
 
 fn part_two() {
@@ -33,7 +33,7 @@ fn part_two() {
         .map(|slope| tree_count_for_slope(&map, slope))
         .fold(1, |product, count| product * count);
 
-    println!("Day 3B - Answer: {:?}", trees);
+    println!(", B: {:?}", trees);
 }
 
 fn tree_count_for_slope(map: &Map, slope: &Slope) -> i32 {

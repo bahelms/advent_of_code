@@ -24,7 +24,7 @@ fn part_two() {
     for group in get_groups() {
         total_count += common_answers_for_group(group);
     }
-    println!(" - B: {:?}", total_count);
+    println!(", B: {:?}", total_count);
 }
 
 fn common_answers_for_group(group: String) -> i32 {

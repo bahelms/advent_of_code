@@ -10,7 +10,7 @@ pub fn execute() {
 fn part_one() {
     let entries = get_entries();
     if let Some((entry1, entry2)) = entries_equaling_sum(&entries[..], SUM) {
-        println!("Day 1A - Answer: {}", entry1 * entry2);
+        print!("Day 1 - A: {}", entry1 * entry2);
     }
 }
 
@@ -22,7 +22,7 @@ fn part_two() {
         let remainder = SUM - entry1;
 
         if let Some((entry2, entry3)) = entries_equaling_sum(sublist, remainder) {
-            println!("Day 1B - Answer: {}", entry1 * entry2 * entry3);
+            println!(", B: {}", entry1 * entry2 * entry3);
         }
     }
 }

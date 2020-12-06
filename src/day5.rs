@@ -11,7 +11,7 @@ fn part_one() {
         .map(calculate_seat_id)
         .max()
         .unwrap();
-    println!("Day 5A - Answer: {:?}", highest_id);
+    print!("Day 5 - A: {:?}", highest_id);
 }
 
 fn part_two() {
@@ -23,7 +23,7 @@ fn part_two() {
 
     for (i, id) in ids.iter().enumerate() {
         if id + 1 != ids[i + 1] {
-            println!("Day 5B - Answer: {:?}", id + 1);
+            println!(", B: {:?}", id + 1);
             break;
         }
     }
