@@ -111,12 +111,12 @@ fn get_rules() -> Vec<String> {
 
 #[cfg(test)]
 mod tests {
-    use super::{total_bag_count, Bag, BagMap2};
+    use super::{total_bag_count, Bag, BagMap};
     use std::collections::HashMap;
 
     #[test]
     fn total_bag_count_works() {
-        let mut map: BagMap2 = HashMap::new();
+        let mut map: BagMap = HashMap::new();
         map.insert(
             "A".to_string(),
             vec![Bag {
