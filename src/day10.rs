@@ -1,6 +1,21 @@
 use std::{collections::HashMap, fs};
 
-type Graph = HashMap<i32, Vec<i32>>;
+type Graph = HashMap<i32, Node>;
+
+#[derive(Debug)]
+struct Node {
+    children: Vec<i32>,
+    paths: usize,
+}
+
+impl Node {
+    pub fn new() -> Self {
+        Self {
+            children: Vec::new(),
+            paths: 0,
+        }
+    }
+}
 
 pub fn execute() {
     part_one();
@@ -17,10 +32,10 @@ fn part_one() {
 fn part_two() {
     let ratings = get_ratings();
     let final_rating = ratings[ratings.len() - 1];
-    let graph = convert_to_graph(&ratings);
+    let mut graph = convert_to_graph(&ratings);
     println!(
         " - B: {:?}",
-        number_of_combinations(0, &graph, final_rating)
+        number_of_combinations(0, &mut graph, final_rating)
     );
 }
 
@@ -33,47 +48,55 @@ fn find_differences(ratings: &Vec<i32>) -> HashMap<i32, i32> {
     diffs
 }
 
-fn number_of_combinations(child: i32, graph: &Graph, final_rating: i32) -> i32 {
-    if child == final_rating {
+fn number_of_combinations(rating: i32, graph: &mut Graph, final_rating: i32) -> usize {
+    if rating == final_rating {
         return 1;
     }
 
-    let mut count = 0;
-    let children = graph.get(&child).unwrap();
-    for &child in children {
-        count += number_of_combinations(child, graph, final_rating);
+    let mut node = graph.remove(&rating).unwrap();
+    let mut paths = node.paths;
+    if paths == 0 {
+        for &child in &node.children {
+            paths += number_of_combinations(child, graph, final_rating);
+        }
+        node.paths = paths;
     }
-    count
+    graph.insert(rating, node);
+    paths
 }
 
 fn convert_to_graph(ratings: &Vec<i32>) -> Graph {
-    let mut edges = HashMap::new();
+    let mut graph = HashMap::new();
     let ratings_count = ratings.len();
 
     for (i, &rating) in ratings.iter().enumerate() {
+        let mut node = Node::new();
+
         if i + 1 == ratings_count {
+            graph.insert(rating, node);
             break;
         }
 
-        let mut children = vec![ratings[i + 1]];
-
+        node.children.push(ratings[i + 1]);
         if i + 2 < ratings_count {
             let next_rating = ratings[i + 2];
             let diff = next_rating - rating;
 
-            if diff == 2 || diff == 3 {
-                children.push(next_rating);
+            if diff <= 3 {
+                node.children.push(next_rating);
                 if i + 3 < ratings_count {
-                    let next_rating2 = ratings[i + 3];
-                    if next_rating2 - rating == 3 {
-                        children.push(next_rating2);
+                    let next_rating = ratings[i + 3];
+                    let diff = next_rating - rating;
+
+                    if diff <= 3 {
+                        node.children.push(next_rating);
                     }
                 }
             }
         }
-        edges.insert(rating, children);
+        graph.insert(rating, node);
     }
-    edges
+    graph
 }
 
 fn get_ratings() -> Vec<i32> {
@@ -94,7 +117,7 @@ mod tests {
 
     #[test]
     fn test_find_differences() {
-        let mut ratings = vec![0, 1, 4, 5, 6, 7, 10, 11, 12, 15, 16, 19, 22];
+        let ratings = vec![0, 1, 4, 5, 6, 7, 10, 11, 12, 15, 16, 19, 22];
         let diffs = find_differences(&ratings);
         assert_eq!(diffs.get(&1).unwrap(), &7);
         assert_eq!(diffs.get(&3).unwrap(), &5);
@@ -102,22 +125,22 @@ mod tests {
 
     #[test]
     fn test_convert_to_graph() {
-        let mut ratings = vec![0, 1, 4, 5, 6, 7, 10, 11, 12, 15, 16, 19, 22];
+        let ratings = vec![0, 1, 4, 5, 6, 7, 10, 11, 12, 15, 16, 19, 22];
         let graph = convert_to_graph(&ratings);
-        assert_eq!(graph.get(&4).unwrap(), &vec![5, 6, 7]);
+        assert_eq!(graph.get(&4).unwrap().children, vec![5, 6, 7]);
     }
 
     #[test]
     fn test_number_of_combinations() {
-        let mut ratings = vec![0, 1, 4, 5, 6, 7, 10, 11, 12, 15, 16, 19, 22];
-        let graph = convert_to_graph(&ratings);
-        assert_eq!(number_of_combinations(0, &graph, 22), 8);
+        let ratings = vec![0, 1, 4, 5, 6, 7, 10, 11, 12, 15, 16, 19, 22];
+        let mut graph = convert_to_graph(&ratings);
+        assert_eq!(number_of_combinations(0, &mut graph, 22), 8);
 
-        let mut ratings = vec![
+        let ratings = vec![
             0, 1, 2, 3, 4, 7, 8, 9, 10, 11, 14, 17, 18, 19, 20, 23, 24, 25, 28, 31, 32, 33, 34, 35,
             38, 39, 42, 45, 46, 47, 48, 49, 52,
         ];
-        let graph = convert_to_graph(&ratings);
-        assert_eq!(number_of_combinations(0, &graph, 52), 19208);
+        let mut graph = convert_to_graph(&ratings);
+        assert_eq!(number_of_combinations(0, &mut graph, 52), 19208);
     }
 }
