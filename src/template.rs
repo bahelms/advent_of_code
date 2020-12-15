@@ -13,11 +13,11 @@ fn part_two() {
     println!(" - B: {:?}", 0);
 }
 
-fn get_data() -> Vec<usize> {
+fn get_data() -> Vec<String> {
     fs::read_to_string("data/day10.txt")
         .unwrap()
         .lines()
-        .map(|num| num.parse().unwrap())
+        .map(String::from)
         .collect()
 }
 
