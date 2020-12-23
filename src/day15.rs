@@ -63,13 +63,13 @@ fn part_two() {
         cache.insert(num, i as i32 + 1);
     }
 
-    let num = find_2020(
-        &mut cache,
-        *INPUT.last().unwrap(),
-        INPUT.len() as i32 + 1,
-        30_000_000,
-    );
-    println!(" - B: {:?}", num);
+    // let num = find_2020(
+    //     &mut cache,
+    //     *INPUT.last().unwrap(),
+    //     INPUT.len() as i32 + 1,
+    //     30_000_000,
+    // );
+    println!(" - B: {:?}", "solved");
 }
 
 fn find_2020(cache: &mut Cache, mut last_num: i32, mut current_turn: i32, stop: i32) -> i32 {
