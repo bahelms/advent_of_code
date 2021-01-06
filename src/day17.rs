@@ -73,47 +73,82 @@ fn part_one() {
 type Cube = Vec<i32>;
 const DIMENSIONS: i32 = 4;
 
+#[derive(Debug)]
 struct Hyperplane {
     dimensional_ranges: Vec<Range<i32>>,
 }
 
 impl Hyperplane {
-    pub fn new(dimensions: usize) -> Self {
+    fn new(dimensions: usize) -> Self {
         Self {
             dimensional_ranges: Vec::with_capacity(dimensions),
         }
     }
-}
 
-impl Iterator for Hyperplane {
-    type Item = Cube;
+    fn count_active_neighbors(&self, cube: &Cube, active_cubes: &HashSet<Cube>) -> i32 {
+        let mut count = 0;
+        let mut neighbor_ranges = Vec::with_capacity(self.dimensional_ranges.len());
+        for coord in cube {
+            neighbor_ranges.push(coord - 1..coord + 2);
+        }
 
-    fn next(&mut self) -> Option<Self::Item> {
-        None
+        for active_cube in active_cubes {
+            if active_cube == cube {
+                continue;
+            }
+
+            let mut neighbor = true;
+            for (coord, range) in active_cube.iter().zip(neighbor_ranges.iter()) {
+                if !range.contains(coord) {
+                    neighbor = false;
+                    break;
+                }
+            }
+
+            if neighbor {
+                count += 1;
+            }
+        }
+        count
     }
 }
 
 fn part_two() {
     let active_cubes = compile_active_cubes();
-    for _ in 0..6 {
-        let hyperplane = create_hyperplane(&active_cubes);
+    let hyperplane = create_hyperplane(&active_cubes);
+    let mut args = (hyperplane, active_cubes);
 
-        //   for each cube in hyperplane
-        for x in hyperplane.dimensional_ranges[0].clone() {
-            for y in hyperplane.dimensional_ranges[1].clone() {
-                for z in hyperplane.dimensional_ranges[2].clone() {
-                    for w in hyperplane.dimensional_ranges[3].clone() {
-                        let cube = vec![x, y, z, w];
-                        //     calculate active neighbors total
-                        //     if becomes active or stays active
-                        //       add to new active cubes set
+    // for _ in 0..6 {
+    //     args = run_cycle2(args.0, args.1);
+    // }
+    // let answer = args.1.len();
+    println!(" - B: {:?}", "solved in 55 secs");
+}
+
+fn run_cycle2(hyperplane: Hyperplane, active_cubes: HashSet<Cube>) -> (Hyperplane, HashSet<Cube>) {
+    let mut new_active_cubes: HashSet<Cube> = HashSet::new();
+
+    // hardcoded to 4 dimensions
+    for x in hyperplane.dimensional_ranges[0].clone() {
+        for y in hyperplane.dimensional_ranges[1].clone() {
+            for z in hyperplane.dimensional_ranges[2].clone() {
+                for w in hyperplane.dimensional_ranges[3].clone() {
+                    let cube = vec![x, y, z, w];
+                    let count = hyperplane.count_active_neighbors(&cube, &active_cubes);
+                    if active_cubes.contains(&cube) {
+                        if count == 2 || count == 3 {
+                            new_active_cubes.insert(cube);
+                        }
+                    } else {
+                        if count == 3 {
+                            new_active_cubes.insert(cube);
+                        }
                     }
                 }
             }
         }
     }
-    // count latest set
-    println!(" - B: {:?}", 0);
+    (create_hyperplane(&new_active_cubes), new_active_cubes)
 }
 
 fn compile_active_cubes() -> HashSet<Cube> {
@@ -135,7 +170,7 @@ fn compile_active_cubes() -> HashSet<Cube> {
 fn create_hyperplane(active_cubes: &HashSet<Cube>) -> Hyperplane {
     let mut hyperplane = Hyperplane::new(DIMENSIONS as usize);
     for _ in 0..DIMENSIONS {
-        hyperplane.dimensional_ranges.push(0..0);
+        hyperplane.dimensional_ranges.push(0..1);
     }
 
     for cube in active_cubes {
@@ -148,6 +183,12 @@ fn create_hyperplane(active_cubes: &HashSet<Cube>) -> Hyperplane {
             }
         }
     }
+    hyperplane.dimensional_ranges = hyperplane
+        .dimensional_ranges
+        .iter()
+        .cloned()
+        .map(|range| range.start - 1..range.end + 2)
+        .collect();
     hyperplane
 }
 
@@ -282,7 +323,53 @@ fn count_active_cubes(dim: &Dimension) -> i32 {
 
 #[cfg(test)]
 mod tests {
-    use super::Dimension;
+    use super::{create_hyperplane, Cube, Dimension};
+    use std::collections::HashSet;
+
+    #[test]
+    fn hyperplane_count_active_neighbors_works() {
+        let mut active: HashSet<Cube> = HashSet::new();
+        active.insert(vec![1, 0, 0, 0]);
+        active.insert(vec![2, 1, 0, 0]);
+        active.insert(vec![0, 2, 0, 0]);
+        active.insert(vec![1, 2, 0, 0]);
+        active.insert(vec![2, 2, 0, 0]);
+        let hyperplane = create_hyperplane(&active);
+        let count = hyperplane.count_active_neighbors(&vec![2, 1, 0, 0], &active);
+        assert_eq!(count, 3);
+    }
+
+    #[test]
+    fn run_cycle2_works_with_4_dimensions() {
+        // .#.
+        // ..#
+        // ###
+        //
+        // 1 cycle
+        //
+        // (z,w)
+        // (-1,-1) (0,-1) (1,-1)
+        // (-1,0) (1,0)
+        // (-1,1) (0,1) (1,1)
+        // #..
+        // ..#
+        // .#.
+        //
+        // z=0, w=0
+        // ...
+        // #.#
+        // .##
+        // .#.
+        let mut active: HashSet<Cube> = HashSet::new();
+        active.insert(vec![1, 0, 0, 0]);
+        active.insert(vec![2, 1, 0, 0]);
+        active.insert(vec![0, 2, 0, 0]);
+        active.insert(vec![1, 2, 0, 0]);
+        active.insert(vec![2, 2, 0, 0]);
+        let hyperplane = create_hyperplane(&active);
+        let t = super::run_cycle2(hyperplane, active);
+        assert_eq!(t.1.len(), 29);
+    }
 
     #[test]
     fn run_cycle_works() {
@@ -366,7 +453,7 @@ mod tests {
             vec!['.', '.', '#'],
             vec!['#', '#', '#'],
         ]);
-        for cycle in 0..6 {
+        for _ in 0..6 {
             dim = super::run_cycle(dim);
         }
         assert_eq!(super::count_active_cubes(&dim), 112);
