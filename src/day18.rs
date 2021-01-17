@@ -12,7 +12,7 @@ struct Lexer {
 }
 
 impl Lexer {
-    fn new(input: String) -> Lexer {
+    fn new(input: &str) -> Lexer {
         let mut tokens: Vec<Token> = input
             .chars()
             .filter(|&ch| ch != ' ')
@@ -39,12 +39,12 @@ pub fn execute() {
 }
 
 fn part_one() {
-    let sum: u64 = get_input().iter().map(|line| calculate(line.clone())).sum();
+    let sum: u64 = get_input().iter().map(|line| calculate(line)).sum();
     print!("Day 18 - A: {:?}", sum);
 }
 
 fn part_two() {
-    let sum: u64 = get_input().iter().map(|line| calculate(line.clone())).sum();
+    let sum: u64 = get_input().iter().map(|line| calculate(line)).sum();
     println!(" - B: {:?}", sum);
 }
 
@@ -56,7 +56,7 @@ fn get_input() -> Vec<String> {
         .collect()
 }
 
-fn calculate(input: String) -> u64 {
+fn calculate(input: &str) -> u64 {
     let mut lexer = Lexer::new(input);
     evaluate(&mut lexer, 0)
 }
@@ -113,28 +113,28 @@ mod tests {
 
     #[test]
     fn calculate_single_expression() {
-        assert_eq!(calculate("2".to_string()), 2);
+        assert_eq!(calculate("2"), 2);
     }
 
     #[test]
     fn calculate_arith_expression() {
-        assert_eq!(calculate("2 + 5".to_string()), 7);
+        assert_eq!(calculate("2 + 5"), 7);
     }
 
     #[test]
     fn calculate_deep_arith_expression() {
-        assert_eq!(calculate("3 + 5 * 2 + 1".to_string()), 17);
+        assert_eq!(calculate("3 + 5 * 2 + 1"), 17);
     }
 
     #[test]
     fn calculate_first_grouped_xpression() {
-        assert_eq!(calculate("(3 + 5) * 2".to_string()), 16);
+        assert_eq!(calculate("(3 + 5) * 2"), 16);
     }
 
     #[test]
     fn calculate_first_grouped_expression() {
         assert_eq!(
-            calculate("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2".to_string()),
+            calculate("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2"),
             13632
         );
     }

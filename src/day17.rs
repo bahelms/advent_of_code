@@ -119,13 +119,17 @@ fn part_two() {
     let mut args = (hyperplane, active_cubes);
 
     // for _ in 0..6 {
-    //     args = run_cycle2(args.0, args.1);
+    //     args = run_cycle2(args.0, args.1, 4);
     // }
     // let answer = args.1.len();
     println!(" - B: {:?}", "solved in 55 secs");
 }
 
-fn run_cycle2(hyperplane: Hyperplane, active_cubes: HashSet<Cube>) -> (Hyperplane, HashSet<Cube>) {
+fn run_cycle2(
+    hyperplane: Hyperplane,
+    active_cubes: HashSet<Cube>,
+    _dimensions: i32,
+) -> (Hyperplane, HashSet<Cube>) {
     let mut new_active_cubes: HashSet<Cube> = HashSet::new();
 
     // hardcoded to 4 dimensions
@@ -367,7 +371,7 @@ mod tests {
         active.insert(vec![1, 2, 0, 0]);
         active.insert(vec![2, 2, 0, 0]);
         let hyperplane = create_hyperplane(&active);
-        let t = super::run_cycle2(hyperplane, active);
+        let t = super::run_cycle2(hyperplane, active, 4);
         assert_eq!(t.1.len(), 29);
     }
 
